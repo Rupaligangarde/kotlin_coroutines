@@ -1,4 +1,6 @@
 import kotlinx.coroutines.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 fun main() {
     exampleLuanchCorountineWaiting()
@@ -57,9 +59,11 @@ fun exampleLuanchGlobalWaiting() = runBlocking{
 fun exampleLuanchCorountineWaiting() = runBlocking{
     println("one = from ${Thread.currentThread().name}")
 
-    this.launch {
+    val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
+    launch(customDispatcher) {
         printlnDelay("two = from ${Thread.currentThread().name}")
     }
     println("three = from ${Thread.currentThread().name}")
+    (customDispatcher.executor as ExecutorService).shutdown()
 }
 
