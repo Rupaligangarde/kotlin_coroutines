@@ -3,7 +3,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 fun main() {
-    exampleAsyncAwait()
+    exampleContext()
 }
 
 
@@ -81,6 +81,19 @@ fun exampleAsyncAwait() = runBlocking {
     val deferred3 = async { calculateHardThings(30) }
 
     val sum = deferred1.await() + deferred2.await() + deferred3.await()
+
+    val endTime = System.currentTimeMillis()
+    println("sum = $sum \ncalculated in ${endTime - startTime}")
+}
+
+fun exampleContext() = runBlocking {
+
+    val startTime = System.currentTimeMillis()
+    val result1 = withContext(Dispatchers.Default) { calculateHardThings(10) }
+    val result2 = withContext(Dispatchers.Default) { calculateHardThings(20) }
+    val result3 = withContext(Dispatchers.Default) { calculateHardThings(30) }
+
+    val sum = result1 + result2 + result3
 
     val endTime = System.currentTimeMillis()
     println("sum = $sum \ncalculated in ${endTime - startTime}")
