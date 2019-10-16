@@ -1,9 +1,7 @@
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 fun main() {
-    exampleBlockingDispatchers()
+    exampleLuanchCorountineWaiting()
 }
 
 
@@ -31,3 +29,37 @@ fun exampleBlockingDispatchers() {
     println("three = from ${Thread.currentThread().name}")
     //this runs only after runBlocking is fully executed
 }
+
+
+fun exampleLuanchGlobal() = runBlocking{
+    println("one = from ${Thread.currentThread().name}")
+
+    GlobalScope.launch {
+        printlnDelay("two = from ${Thread.currentThread().name}")
+    }
+    println("three = from ${Thread.currentThread().name}")
+
+    delay(1000)
+}
+
+fun exampleLuanchGlobalWaiting() = runBlocking{
+    println("one = from ${Thread.currentThread().name}")
+
+    val job = GlobalScope.launch {
+        printlnDelay("two = from ${Thread.currentThread().name}")
+    }
+    println("three = from ${Thread.currentThread().name}")
+
+    job.join()
+}
+
+
+fun exampleLuanchCorountineWaiting() = runBlocking{
+    println("one = from ${Thread.currentThread().name}")
+
+    this.launch {
+        printlnDelay("two = from ${Thread.currentThread().name}")
+    }
+    println("three = from ${Thread.currentThread().name}")
+}
+
