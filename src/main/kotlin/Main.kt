@@ -3,7 +3,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 fun main() {
-    exampleLuanchCorountineWaiting()
+    exampleAsyncAwait()
 }
 
 
@@ -33,7 +33,7 @@ fun exampleBlockingDispatchers() {
 }
 
 
-fun exampleLuanchGlobal() = runBlocking{
+fun exampleLuanchGlobal() = runBlocking {
     println("one = from ${Thread.currentThread().name}")
 
     GlobalScope.launch {
@@ -44,7 +44,7 @@ fun exampleLuanchGlobal() = runBlocking{
     delay(1000)
 }
 
-fun exampleLuanchGlobalWaiting() = runBlocking{
+fun exampleLuanchGlobalWaiting() = runBlocking {
     println("one = from ${Thread.currentThread().name}")
 
     val job = GlobalScope.launch {
@@ -56,7 +56,7 @@ fun exampleLuanchGlobalWaiting() = runBlocking{
 }
 
 
-fun exampleLuanchCorountineWaiting() = runBlocking{
+fun exampleLuanchCorountineWaiting() = runBlocking {
     println("one = from ${Thread.currentThread().name}")
 
     val customDispatcher = Executors.newFixedThreadPool(2).asCoroutineDispatcher()
@@ -67,3 +67,21 @@ fun exampleLuanchCorountineWaiting() = runBlocking{
     (customDispatcher.executor as ExecutorService).shutdown()
 }
 
+
+suspend fun calculateHardThings(value: Int): Int {
+    delay(1000)
+    return value * value
+}
+
+fun exampleAsyncAwait() = runBlocking {
+
+    val startTime = System.currentTimeMillis()
+    val deferred1 = async { calculateHardThings(10) }
+    val deferred2 = async { calculateHardThings(20) }
+    val deferred3 = async { calculateHardThings(30) }
+
+    val sum = deferred1.await() + deferred2.await() + deferred3.await()
+
+    val endTime = System.currentTimeMillis()
+    println("sum = $sum \ncalculated in ${endTime - startTime}")
+}
